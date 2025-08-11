@@ -53,7 +53,7 @@ services:
     container_name: worker
     restart: unless-stopped
     build:
-      dockerfile: docker/DockerfileQueueWorker
+      dockerfile: docker/DockerfileQueueWorkerProd
     env_file: ./dev/.env.micropowermanager-backend
     depends_on:
       mysql:
