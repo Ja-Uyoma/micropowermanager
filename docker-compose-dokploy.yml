@@ -3,7 +3,8 @@ services:
   backend:
     container_name: backend
     image: enaccess/micropowermanager-backend:latest
-    env_file: ./dev/.env.micropowermanager-backend
+    env_file:
+      - path: .env
     depends_on:
       mysql:
         condition: service_healthy
@@ -27,7 +28,9 @@ services:
   frontend:
     container_name: frontend
     image: enaccess/micropowermanager-frontend:latest
-    env_file: ./dev/.env.micropowermanager-frontend
+    environment:
+      - MPM_ENV=${MPM_ENV}
+      - MPM_BACKEND_URL=${MPM_BACKEND_URL}
     ports:
       - 8001:80
     networks:
@@ -37,7 +40,8 @@ services:
     container_name: scheduler
     image: enaccess/micropowermanager-scheduler:latest
     # micropowermanager-scheduler is a backend service and uses the same configuration as micropowermanager-backend
-    env_file: ./dev/.env.micropowermanager-backend
+    env_file:
+      - path: .env
     depends_on:
       mysql:
         condition: service_healthy
@@ -54,7 +58,8 @@ services:
     restart: unless-stopped
     build:
       dockerfile: docker/DockerfileQueueWorkerProd
-    env_file: ./dev/.env.micropowermanager-backend
+    env_file:
+      - path: .env
     depends_on:
       mysql:
         condition: service_healthy
@@ -79,7 +84,9 @@ services:
   mysql:
     container_name: mysql
     image: mysql:8.4
-    env_file: ./dev/.env.mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
